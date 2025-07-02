@@ -3,12 +3,12 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\balita;
 use App\Models\Posyandu;
-use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Validation\Rule;
 
-class PosyanduController extends Controller
+class BalitaController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -16,17 +16,17 @@ class PosyanduController extends Controller
     public function index(): JsonResponse
     {
         try {
-            $posyandu = Posyandu::with('user')->get();
+            $balita = balita::with('posyandu')->get();
             
             return response()->json([
                 'success' => true,
-                'message' => 'Data posyandu berhasil diambil',
-                'data' => $posyandu
+                'message' => 'Data balita berhasil diambil',
+                'data' => $balita
             ], 200);
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Gagal mengambil data posyandu',
+                'message' => 'Gagal mengambil data balita',
                 'error' => $e->getMessage()
             ], 500);
         }
@@ -39,18 +39,22 @@ class PosyanduController extends Controller
     {
         try {
             $validated = $request->validate([
-                'user_id' => 'required|integer|exists:users,id',
-                'nama_posyandu' => 'required|string|max:255',
-                'nama_desa' => 'required|string|max:255'
+                'nama' => 'required|string|max:255',
+                'nik' => 'required|string|unique:balita,nik|max:16',
+                'tanggal_lahir' => 'required|date',
+                'alamat' => 'required|string',
+                'jenis_kelamin' => ['required', Rule::in(['L', 'P'])],
+                'posyandu_id' => 'required|exists:posyandu,id',
+                'Buku_KIA' => ['required', Rule::in(['ada', 'tidak_ada'])]
             ]);
 
-            $posyandu = Posyandu::create($validated);
-            $posyandu->load('user');
+            $balita = balita::create($validated);
+            $balita->load('posyandu');
 
             return response()->json([
                 'success' => true,
-                'message' => 'Posyandu berhasil dibuat',
-                'data' => $posyandu
+                'message' => 'Data balita berhasil ditambahkan',
+                'data' => $balita
             ], 201);
         } catch (\Illuminate\Validation\ValidationException $e) {
             return response()->json([
@@ -61,7 +65,7 @@ class PosyanduController extends Controller
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Gagal membuat posyandu',
+                'message' => 'Gagal menambahkan data balita',
                 'error' => $e->getMessage()
             ], 500);
         }
@@ -73,22 +77,22 @@ class PosyanduController extends Controller
     public function show($id): JsonResponse
     {
         try {
-            $posyandu = Posyandu::with('user')->findOrFail($id);
-
+            $balita = balita::with('posyandu')->findOrFail($id);
+            
             return response()->json([
                 'success' => true,
-                'message' => 'Detail posyandu berhasil diambil',
-                'data' => $posyandu
+                'message' => 'Data balita berhasil diambil',
+                'data' => $balita
             ], 200);
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Posyandu tidak ditemukan'
+                'message' => 'Data balita tidak ditemukan'
             ], 404);
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Gagal mengambil detail posyandu',
+                'message' => 'Gagal mengambil data balita',
                 'error' => $e->getMessage()
             ], 500);
         }
@@ -100,26 +104,30 @@ class PosyanduController extends Controller
     public function update(Request $request, $id): JsonResponse
     {
         try {
-            $posyandu = Posyandu::findOrFail($id);
-
+            $balita = balita::findOrFail($id);
+            
             $validated = $request->validate([
-                'user_id' => 'sometimes|required|integer|exists:users,id',
-                'nama_posyandu' => 'sometimes|required|string|max:255',
-                'nama_desa' => 'sometimes|required|string|max:255'
+                'nama' => 'sometimes|required|string|max:255',
+                'nik' => 'sometimes|required|string|max:16|unique:balita,nik,' . $id,
+                'tanggal_lahir' => 'sometimes|required|date',
+                'alamat' => 'sometimes|required|string',
+                'jenis_kelamin' => ['sometimes', 'required', Rule::in(['L', 'P'])],
+                'posyandu_id' => 'sometimes|required|exists:posyandu,id',
+                'Buku_KIA' => ['sometimes', 'required', Rule::in(['ada', 'tidak_ada'])]
             ]);
 
-            $posyandu->update($validated);
-            $posyandu->load('user');
+            $balita->update($validated);
+            $balita->load('posyandu');
 
             return response()->json([
                 'success' => true,
-                'message' => 'Posyandu berhasil diperbarui',
-                'data' => $posyandu
+                'message' => 'Data balita berhasil diperbarui',
+                'data' => $balita
             ], 200);
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Posyandu tidak ditemukan'
+                'message' => 'Data balita tidak ditemukan'
             ], 404);
         } catch (\Illuminate\Validation\ValidationException $e) {
             return response()->json([
@@ -130,7 +138,7 @@ class PosyanduController extends Controller
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Gagal memperbarui posyandu',
+                'message' => 'Gagal memperbarui data balita',
                 'error' => $e->getMessage()
             ], 500);
         }
@@ -142,53 +150,53 @@ class PosyanduController extends Controller
     public function destroy($id): JsonResponse
     {
         try {
-            $posyandu = Posyandu::findOrFail($id);
-            $posyandu->delete();
+            $balita = balita::findOrFail($id);
+            $balita->delete();
 
             return response()->json([
                 'success' => true,
-                'message' => 'Posyandu berhasil dihapus'
+                'message' => 'Data balita berhasil dihapus'
             ], 200);
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Posyandu tidak ditemukan'
+                'message' => 'Data balita tidak ditemukan'
             ], 404);
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Gagal menghapus posyandu',
+                'message' => 'Gagal menghapus data balita',
                 'error' => $e->getMessage()
             ], 500);
         }
     }
 
     /**
-     * Get posyandu by user ID.
+     * Get balita by posyandu ID.
      */
-    public function getByUser($userId): JsonResponse
+    public function getByPosyandu($posyandu_id): JsonResponse
     {
         try {
-            $posyandu = Posyandu::with('user')
-                ->where('user_id', $userId)
+            $balita = balita::with('posyandu')
+                ->where('posyandu_id', $posyandu_id)
                 ->get();
-
+            
             return response()->json([
                 'success' => true,
-                'message' => 'Data posyandu berhasil diambil berdasarkan user',
-                'data' => $posyandu
+                'message' => 'Data balita berhasil diambil berdasarkan posyandu',
+                'data' => $balita
             ], 200);
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Gagal mengambil data posyandu berdasarkan user',
+                'message' => 'Gagal mengambil data balita berdasarkan posyandu',
                 'error' => $e->getMessage()
             ], 500);
         }
     }
 
     /**
-     * Search posyandu by name.
+     * Search balita by name or NIK.
      */
     public function search(Request $request): JsonResponse
     {
@@ -202,44 +210,20 @@ class PosyanduController extends Controller
                 ], 400);
             }
 
-            $posyandu = Posyandu::with('user')
-                ->where('nama_posyandu', 'LIKE', '%' . $query . '%')
-                ->orWhere('nama_desa', 'LIKE', '%' . $query . '%')
+            $balita = balita::with('posyandu')
+                ->where('nama', 'LIKE', '%' . $query . '%')
+                ->orWhere('nik', 'LIKE', '%' . $query . '%')
                 ->get();
             
             return response()->json([
                 'success' => true,
-                'message' => 'Hasil pencarian posyandu',
-                'data' => $posyandu
+                'message' => 'Hasil pencarian balita',
+                'data' => $balita
             ], 200);
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Gagal melakukan pencarian posyandu',
-                'error' => $e->getMessage()
-            ], 500);
-        }
-    }
-
-    /**
-     * Get posyandu with their balita count.
-     */
-    public function getWithBalitaCount(): JsonResponse
-    {
-        try {
-            $posyandu = Posyandu::with('user')
-                ->withCount('balita')
-                ->get();
-            
-            return response()->json([
-                'success' => true,
-                'message' => 'Data posyandu dengan jumlah balita berhasil diambil',
-                'data' => $posyandu
-            ], 200);
-        } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Gagal mengambil data posyandu dengan jumlah balita',
+                'message' => 'Gagal melakukan pencarian balita',
                 'error' => $e->getMessage()
             ], 500);
         }

@@ -11,10 +11,16 @@ class Posyandu extends Model
     protected $fillable = [
         'user_id',
         'nama_posyandu',
+        'nama_desa'
     ];
 
     public function user()
     {
-        return $this->belongsTo('App\Models\User', 'user_id');
+        return $this->belongsTo(User::class, 'user_id');
+    }
+
+    public function balita()
+    {
+        return $this->hasMany(balita::class, 'posyandu_id');
     }
 }

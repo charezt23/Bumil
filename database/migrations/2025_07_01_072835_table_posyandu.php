@@ -16,6 +16,7 @@ return new class extends Migration
             //value kolom ingin buat kolom user_id yang id nya diambil dari tabel users, buatkan migrasinya
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             $table->string('nama_posyandu');
+            $table->string('nama_desa'); // Kolom nama_desa, bisa null
             $table->timestamps(); // Menambahkan created_at dan updated_at
         });
     }

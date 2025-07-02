@@ -19,5 +19,12 @@ class DatabaseSeeder extends Seeder
             'name' => 'Test User',
             'email' => 'test@example.com',
         ]);
+
+        // Jalankan seeder untuk Posyandu, Balita, dan Kunjungan Balita
+        $this->call([
+            PosyanduSeeder::class,
+            BalitaSeeder::class,
+            KunjunganBalitaSeeder::class,
+        ]);
     }
 }
