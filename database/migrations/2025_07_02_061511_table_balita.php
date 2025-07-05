@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('nama');
             $table->string('nik')->unique();
+            $table->string('nama_ibu');
             $table->date('tanggal_lahir');
             $table->text('alamat');
             $table->enum('jenis_kelamin', ['L', 'P']);

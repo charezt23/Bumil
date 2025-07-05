@@ -41,6 +41,7 @@ class BalitaController extends Controller
             $validated = $request->validate([
                 'nama' => 'required|string|max:255',
                 'nik' => 'required|string|unique:balita,nik|max:16',
+                'nama_ibu' => 'required|string|max:255',
                 'tanggal_lahir' => 'required|date',
                 'alamat' => 'required|string',
                 'jenis_kelamin' => ['required', Rule::in(['L', 'P'])],
@@ -109,6 +110,7 @@ class BalitaController extends Controller
             $validated = $request->validate([
                 'nama' => 'sometimes|required|string|max:255',
                 'nik' => 'sometimes|required|string|max:16|unique:balita,nik,' . $id,
+                'nama_ibu' => 'sometimes|required|string|max:255',
                 'tanggal_lahir' => 'sometimes|required|date',
                 'alamat' => 'sometimes|required|string',
                 'jenis_kelamin' => ['sometimes', 'required', Rule::in(['L', 'P'])],

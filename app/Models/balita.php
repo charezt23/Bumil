@@ -10,6 +10,7 @@ class balita extends Model
     protected $fillable = [
         'nama',
         'nik',
+        'nama_ibu',
         'tanggal_lahir',
         'alamat',
         'jenis_kelamin',

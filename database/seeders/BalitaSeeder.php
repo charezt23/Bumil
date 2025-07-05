@@ -66,6 +66,7 @@ class BalitaSeeder extends Seeder
                 balita::create([
                     'nama' => $data['nama'],
                     'nik' => $data['nik'],
+                    'nama_ibu' => 'Ibu ' . $data['nama'],
                     'tanggal_lahir' => Carbon::now()->subMonths(rand(6, 24))->format('Y-m-d'), // Umur 6-24 bulan
                     'alamat' => $alamatPerPosyandu[$index][$i],
                     'jenis_kelamin' => $data['jenis_kelamin'],
