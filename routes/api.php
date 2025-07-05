@@ -5,6 +5,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\PosyanduController;
 use App\Http\Controllers\BalitaController;
+use App\Http\Controllers\ImunisasiController;
+use App\Http\Controllers\KematianController;
 use App\Http\Controllers\Kunjungan_BalitaController;
 use App\Http\Middleware\ApiTokenAuth;
 
@@ -26,6 +28,13 @@ Route::get('/balita/search', [BalitaController::class, 'search']);
 // Kunjungan Balita routes (development - tanpa middleware)
 Route::apiResource('kunjungan-balita', Kunjungan_BalitaController::class);
 Route::get('/kunjungan-balita/balita/{balitaId}', [Kunjungan_BalitaController::class, 'getByBalita']);
+
+// Imunisasi routes (development - tanpa middleware)
+Route::apiResource('imunisasi', ImunisasiController::class);
+Route::get('/imunisasi/balita/{balitaId}', [ImunisasiController::class, 'GetImunisasibyBalita']);
+
+// Kematian routes (development - tanpa middleware)
+Route::apiResource('kematian', KematianController::class);
 
 
 // Protected routes (memerlukan autentikasi dengan token)
