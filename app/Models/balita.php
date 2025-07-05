@@ -21,4 +21,9 @@ class balita extends Model
     {
         return $this->belongsTo(Posyandu::class, 'posyandu_id');
     }
+
+    public function kunjungan_balita()
+    {
+        return $this->hasMany(kunjungan_balita::class, 'balita_id');
+    }
 }

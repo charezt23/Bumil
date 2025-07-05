@@ -100,41 +100,48 @@ class PosyanduController extends Controller
     public function update(Request $request, $id): JsonResponse
     {
         try {
-            $posyandu = Posyandu::findOrFail($id);
+        $posyandu = Posyandu::findOrFail($id);
 
-            $validated = $request->validate([
-                'user_id' => 'sometimes|required|integer|exists:users,id',
-                'nama_posyandu' => 'sometimes|required|string|max:255',
-                'nama_desa' => 'sometimes|required|string|max:255'
-            ]);
+        $validated = $request->validate([
+            'user_id' => 'required|integer|exists:users,id',
+            'nama_posyandu' => 'required|string|max:255',
+            'nama_desa' => 'required|string|max:255'
+        ]);
 
-            $posyandu->update($validated);
-            $posyandu->load('user');
-
-            return response()->json([
-                'success' => true,
-                'message' => 'Posyandu berhasil diperbarui',
-                'data' => $posyandu
-            ], 200);
-        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+        if ($posyandu->user_id !== (int) $validated['user_id']) {
             return response()->json([
                 'success' => false,
-                'message' => 'Posyandu tidak ditemukan'
-            ], 404);
-        } catch (\Illuminate\Validation\ValidationException $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Validasi gagal',
-                'errors' => $e->errors()
-            ], 422);
-        } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Gagal memperbarui posyandu',
-                'error' => $e->getMessage()
-            ], 500);
+                'message' => 'Anda Tidak Memiliki Izin untuk mengedit ini.'
+            ], 403);
         }
+        $posyandu->update($validated);
+        $posyandu->load('user');
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Posyandu berhasil diperbarui',
+            'data' => $posyandu
+        ], 200);
+
+    } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Posyandu tidak ditemukan'
+        ], 404);
+    } catch (\Illuminate\Validation\ValidationException $e) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Validasi gagal',
+            'errors' => $e->errors()
+        ], 422);
+    } catch (\Exception $e) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Gagal memperbarui posyandu',
+            'error' => $e->getMessage()
+        ], 500);
     }
+}
 
     /**
      * Remove the specified resource from storage.
@@ -169,8 +176,8 @@ class PosyanduController extends Controller
     public function getByUser($userId): JsonResponse
     {
         try {
-            $posyandu = Posyandu::with('user')
-                ->where('user_id', $userId)
+            $posyandu = Posyandu::where('user_id', $userId)
+                ->withCount('balita')
                 ->get();
 
             return response()->json([
@@ -224,10 +231,10 @@ class PosyanduController extends Controller
     /**
      * Get posyandu with their balita count.
      */
-    public function getWithBalitaCount(): JsonResponse
+    public function getWithBalitaCount($posyanduId): JsonResponse
     {
         try {
-            $posyandu = Posyandu::with('user')
+            $posyandu = Posyandu::where('id', $posyanduId)
                 ->withCount('balita')
                 ->get();
             

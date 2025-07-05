@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\PosyanduController;
 use App\Http\Controllers\BalitaController;
+use App\Http\Controllers\Kunjungan_BalitaController;
 use App\Http\Middleware\ApiTokenAuth;
 
 // Public routes (tidak memerlukan autentikasi)
@@ -15,12 +16,17 @@ Route::post('/login', [AuthController::class, 'login']);
 Route::apiResource('posyandu', PosyanduController::class);
 Route::get('/posyandu/user/{userId}', [PosyanduController::class, 'getByUser']);
 Route::get('/posyandu/search', [PosyanduController::class, 'search']);
-Route::get('/posyandu/with-balita-count', [PosyanduController::class, 'getWithBalitaCount']);
+Route::get('/posyandu/with-balita-count/{posyanduId}', [PosyanduController::class, 'getWithBalitaCount']);
 
 // Balita routes (development - tanpa middleware)
 Route::apiResource('balita', BalitaController::class);
 Route::get('/balita/posyandu/{posyandu_id}', [BalitaController::class, 'getByPosyandu']);
 Route::get('/balita/search', [BalitaController::class, 'search']);
+
+// Kunjungan Balita routes (development - tanpa middleware)
+Route::apiResource('kunjungan-balita', Kunjungan_BalitaController::class);
+Route::get('/kunjungan-balita/balita/{balitaId}', [Kunjungan_BalitaController::class, 'getByBalita']);
+
 
 // Protected routes (memerlukan autentikasi dengan token)
 Route::middleware('api.token')->group(function () {
