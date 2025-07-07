@@ -10,6 +10,28 @@ use Illuminate\Validation\ValidationException;
 class KematianController extends Controller
 {
     /**
+     * Display a listing of the resource.
+     */
+    public function index(): JsonResponse
+    {
+        try {
+            $kematian = Kematian::with('balita')->get();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Data kematian berhasil diambil',
+                'data' => $kematian
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Gagal mengambil data kematian',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
      * Store a newly created resource in storage.
      */
     public function store(Request $request): JsonResponse
@@ -135,6 +157,36 @@ class KematianController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Gagal menghapus data kematian',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Get Kematian by Balita ID.
+     */
+    public function getByBalita($balitaId): JsonResponse
+    {
+        try {
+            // A balita should only have one death record, so we use first().
+            $kematian = Kematian::where('balita_id', $balitaId)->with('balita')->first();
+
+            if (!$kematian) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Data kematian tidak ditemukan untuk balita ini'
+                ], 404);
+            }
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Data kematian berhasil diambil',
+                'data' => $kematian
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Gagal mengambil data kematian',
                 'error' => $e->getMessage()
             ], 500);
         }

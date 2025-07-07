@@ -35,6 +35,7 @@ Route::get('/imunisasi/balita/{balitaId}', [ImunisasiController::class, 'GetImun
 
 // Kematian routes (development - tanpa middleware)
 Route::apiResource('kematian', KematianController::class);
+Route::get('/kematian/balita/{balitaId}', [KematianController::class, 'getByBalita']);
 
 
 // Protected routes (memerlukan autentikasi dengan token)
