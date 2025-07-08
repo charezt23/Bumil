@@ -229,4 +229,60 @@ class BalitaController extends Controller
             ], 500);
         }
     }
+
+    /**
+     * Get active balita (age 0-5 years) by user ID.
+     */
+    public function getAktifByUser($posyandu_id): JsonResponse
+    {
+        try {
+            $fiveYearsAgo = now()->subYears(5);
+            
+            $balita = balita::with('posyandu')
+                ->where('posyandu_id', $posyandu_id)
+                ->where('tanggal_lahir', '>=', $fiveYearsAgo)
+                ->get();
+        
+            return response()->json([
+                'success' => true,
+                'message' => 'Data balita aktif berhasil diambil',
+                'data' => $balita
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Gagal mengambil data balita aktif',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Get inactive balita (age > 5 years) by posyandu ID.
+     */
+    public function getInaktifByPosyandu($user_id): JsonResponse
+    {
+        try {
+            $fiveYearsAgo = now()->subYears(5);
+            
+            $balita = balita::with('posyandu')
+                ->whereHas('posyandu', function($query) use ($user_id) {
+                    $query->where('user_id', $user_id);
+                })
+                ->where('tanggal_lahir', '<', $fiveYearsAgo)
+                ->get();
+            
+            return response()->json([
+                'success' => true,
+                'message' => 'Data balita tidak aktif berhasil diambil',
+                'data' => $balita
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Gagal mengambil data balita tidak aktif',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
 }
