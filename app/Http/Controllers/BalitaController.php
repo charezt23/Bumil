@@ -285,4 +285,27 @@ class BalitaController extends Controller
             ], 500);
         }
     }
+
+    public function getAllBalitaWithNotImunisasi($posyandu_id): JsonResponse
+    {
+        try {
+            $waktu_imunisasi = now()->subYears(1.5);
+            $balita = balita::where('posyandu_id', $posyandu_id)
+                ->where('tanggal_lahir', '<=', $waktu_imunisasi)
+                ->whereDoesntHave('imunisasi')
+                ->get();
+                
+            return response()->json([
+                'success' => true,
+                'message' => 'Data balita 18 Bulan yang belum imunisasi berhasil diambil',
+                'data' => $balita
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Gagal mengambil data balita tanpa imunisasi',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
 }
