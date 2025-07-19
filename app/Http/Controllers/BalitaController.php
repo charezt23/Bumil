@@ -179,7 +179,7 @@ class BalitaController extends Controller
     public function getByPosyandu($posyandu_id): JsonResponse
     {
         try {
-            $balita = balita::where('posyandu_id', $posyandu_id)
+            $balita = balita::with('kematian')->where('posyandu_id', $posyandu_id)
                 ->get();
             
             return response()->json([

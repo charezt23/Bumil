@@ -32,7 +32,7 @@ class AuthController extends Controller
 
             return response()->json([
                 'success' => true,
-                'message' => 'User registered successfully',
+                'message' => 'Registerasi Berhasil, Silahkan Login',
                 'data' => [
                     'user' => [
                         'id' => $user->id,
@@ -73,7 +73,7 @@ class AuthController extends Controller
             if (!$user || !Hash::check($request->password, $user->password)) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Invalid credentials'
+                    'message' => 'email atau password salah'
                 ], 401);
             }
 

@@ -115,7 +115,7 @@ class PosyanduController extends Controller
             ], 403);
         }
         $posyandu->update($validated);
-        $posyandu->load('user');
+
 
         return response()->json([
             'success' => true,

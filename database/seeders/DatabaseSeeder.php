@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\kunjungan_balita;
 use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -13,18 +14,23 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
+
 
         User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
+            'name' => 'Bidan Dua',
+            'email' => 'bidandua@gmail.com',
+        ]);
+
+        User::factory()->create([
+            'name' => 'Bidan Satu',
+            'email' => 'bidansatu@gmail.com',
         ]);
 
         // Jalankan seeder untuk Posyandu, Balita, dan Kunjungan Balita
         $this->call([
             PosyanduSeeder::class,
             BalitaSeeder::class,
-            KunjunganBalitaSeeder::class,
+            KunjunganSeeder::class, // Pastikan ini sesuai dengan nama model yang benar
         ]);
     }
 }

@@ -6,7 +6,6 @@ use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use App\Models\Posyandu;
 use App\Models\User;
-use Illuminate\Support\Str;
 
 class PosyanduSeeder extends Seeder
 {
@@ -15,42 +14,18 @@ class PosyanduSeeder extends Seeder
      */
     public function run(): void
     {
-        // Pastikan ada user untuk dijadikan pemilik posyandu
-        // Jika belum ada user, buat user dummy terlebih dahulu
         $users = User::all();
-        if ($users->count() < 3) {
-            // Buat user dummy jika belum ada
-            for ($i = $users->count() + 1; $i <= 3; $i++) {
-                User::create([
-                    'name' => "User Posyandu $i",
-                    'email' => "posyandu$i@example.com",
-                    'password' => bcrypt('password123'),
-                    'api_token' => Str::random(60)
+
+        foreach ($users as $user) {
+            $romawi = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X'];
+            $user_id = $user->id;
+            foreach ($romawi as $r) {
+                Posyandu::create([
+                    'user_id' => $user_id,
+                    'nama_posyandu' => ($user_id === 1) ? 'Posyandu Melati ' . $r : 'Posyandu Mawar ' . $r,
+                    'nama_desa' => ($user_id === 1) ? 'Desa Bajing' : 'Desa Bajing Kulon',
                 ]);
             }
-            $users = User::all();
-        }
-
-        $posyanduData = [
-            [
-                'user_id' => $users[0]->id,
-                'nama_posyandu' => 'Posyandu Melati',
-                'nama_desa' => 'Desa Sukamaju'
-            ],
-            [
-                'user_id' => $users[1]->id,
-                'nama_posyandu' => 'Posyandu Mawar',
-                'nama_desa' => 'Desa Sumber Rezeki'
-            ],
-            [
-                'user_id' => $users[2]->id,
-                'nama_posyandu' => 'Posyandu Anggrek',
-                'nama_desa' => 'Desa Maju Bersama'
-            ]
-        ];
-
-        foreach ($posyanduData as $data) {
-            Posyandu::create($data);
         }
     }
 }

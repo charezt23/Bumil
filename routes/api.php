@@ -15,8 +15,6 @@ Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 
 // Posyandu routes (development - tanpa middleware)
-Route::apiResource('posyandu', PosyanduController::class);
-Route::get('/posyandu/user/{userId}', [PosyanduController::class, 'getByUser']);
 Route::get('/posyandu/search', [PosyanduController::class, 'search']);
 Route::get('/posyandu/with-balita-count/{posyanduId}', [PosyanduController::class, 'getWithBalitaCount']);
 
@@ -26,6 +24,7 @@ Route::get('/balita/posyandu/{posyandu_id}', [BalitaController::class, 'getByPos
 Route::get('/balita/search', [BalitaController::class, 'search']);
 Route::get('/balita/aktif/{posyandu_id}', [BalitaController::class, 'getAktifByUser']);
 Route::get('/balita/inaktif/{user_id}', [BalitaController::class, 'getInaktifByPosyandu']);
+Route::get('/balita/notimunisasi/{posyandu_id}', [BalitaController::class, 'getAllBalitaWithNotImunisasi']);
 
 // Kunjungan Balita routes (development - tanpa middleware)
 Route::apiResource('kunjungan-balita', Kunjungan_BalitaController::class);
@@ -47,6 +46,8 @@ Route::middleware('api.token')->group(function () {
     Route::put('/profile', [AuthController::class, 'updateProfile']);
     Route::post('/change-password', [AuthController::class, 'changePassword']);
     Route::post('/logout', [AuthController::class, 'logout']);
+    Route::get('/posyandu/user/{userId}', [PosyanduController::class, 'getByUser']);
+    Route::apiResource('posyandu', PosyanduController::class);
 });
 
 // Test route untuk memastikan API berjalan
