@@ -149,10 +149,9 @@ class AuthController extends Controller
 
             $request->validate([
                 'name' => 'sometimes|required|string|max:255',
-                'email' => 'sometimes|required|string|email|max:255|unique:users,email,' . $user->id,
             ]);
 
-            $user->update($request->only(['name', 'email']));
+            $user->update($request->only('name'));
 
             return response()->json([
                 'success' => true,
@@ -161,7 +160,6 @@ class AuthController extends Controller
                     'user' => [
                         'id' => $user->id,
                         'name' => $user->name,
-                        'email' => $user->email,
                     ]
                 ]
             ], 200);

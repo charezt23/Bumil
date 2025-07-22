@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\balita;
-use App\Models\Posyandu;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Validation\Rule;
 
@@ -17,7 +16,7 @@ class BalitaController extends Controller
     {
         try {
             $balita = balita::with('posyandu')->get();
-            
+
             return response()->json([
                 'success' => true,
                 'message' => 'Data balita berhasil diambil',
@@ -78,8 +77,8 @@ class BalitaController extends Controller
     public function show($id): JsonResponse
     {
         try {
-            $balita = balita::with('posyandu')->findOrFail($id);
-            
+            $balita = balita::with(['kematian', 'imunisasi', 'kunjungan_balita'])->findOrFail($id);
+
             return response()->json([
                 'success' => true,
                 'message' => 'Data balita berhasil diambil',
@@ -106,7 +105,7 @@ class BalitaController extends Controller
     {
         try {
             $balita = balita::findOrFail($id);
-            
+
             $validated = $request->validate([
                 'nama' => 'sometimes|required|string|max:255',
                 'nik' => 'sometimes|required|string|max:16|unique:balita,nik,' . $id,
@@ -174,36 +173,13 @@ class BalitaController extends Controller
     }
 
     /**
-     * Get balita by posyandu ID.
-     */
-    public function getByPosyandu($posyandu_id): JsonResponse
-    {
-        try {
-            $balita = balita::with('kematian')->where('posyandu_id', $posyandu_id)
-                ->get();
-            
-            return response()->json([
-                'success' => true,
-                'message' => 'Data balita berhasil diambil berdasarkan posyandu',
-                'data' => $balita
-            ], 200);
-        } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Gagal mengambil data balita berdasarkan posyandu',
-                'error' => $e->getMessage()
-            ], 500);
-        }
-    }
-
-    /**
      * Search balita by name or NIK.
      */
     public function search(Request $request): JsonResponse
     {
         try {
             $query = $request->get('q');
-            
+
             if (!$query) {
                 return response()->json([
                     'success' => false,
@@ -215,7 +191,7 @@ class BalitaController extends Controller
                 ->where('nama', 'LIKE', '%' . $query . '%')
                 ->orWhere('nik', 'LIKE', '%' . $query . '%')
                 ->get();
-            
+
             return response()->json([
                 'success' => true,
                 'message' => 'Hasil pencarian balita',
@@ -230,19 +206,61 @@ class BalitaController extends Controller
         }
     }
 
+    public function getAllBalitaByUser($user_id): JsonResponse
+    {
+        try {
+            $balita = balita::whereHas('posyandu', function ($query) use ($user_id) {
+                $query->where('user_id', $user_id);
+            })->get();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Data balita berhasil diambil berdasarkan user',
+                'data' => $balita
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Gagal mengambil data balita berdasarkan user',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
     /**
-     * Get active balita (age 0-5 years) by user ID.
+     * Get balita by posyandu ID.
      */
-    public function getAktifByUser($posyandu_id): JsonResponse
+    public function getAllBalitaByPosyandu($posyandu_id): JsonResponse
+    {
+        try {
+            $balita = balita::where('posyandu_id', $posyandu_id)
+                ->get();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Data balita berhasil diambil berdasarkan posyandu',
+                'data' => $balita
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Gagal mengambil data balita berdasarkan posyandu',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+    /**
+     * Get active balita (age 0-5 years) and not death by posyandu ID.
+     */
+    public function getBalitaAktifByPosyandu($posyandu_id): JsonResponse
     {
         try {
             $fiveYearsAgo = now()->subYears(5);
-            
-            $balita = balita::with('posyandu')
-                ->where('posyandu_id', $posyandu_id)
+
+            $balita = balita::where('posyandu_id', $posyandu_id)
                 ->where('tanggal_lahir', '>=', $fiveYearsAgo)
+                ->whereDoesntHave('kematian')
                 ->get();
-        
+
             return response()->json([
                 'success' => true,
                 'message' => 'Data balita aktif berhasil diambil',
@@ -258,20 +276,20 @@ class BalitaController extends Controller
     }
 
     /**
-     * Get inactive balita (age > 5 years) by posyandu ID.
+     * Get inactive balita (age > 5 years) and or death by posyandu ID.
      */
-    public function getInaktifByPosyandu($user_id): JsonResponse
+    public function getBalitaInAktifByPosyandu($posyandu_id): JsonResponse
     {
         try {
             $fiveYearsAgo = now()->subYears(5);
-            
-            $balita = balita::with('posyandu')
-                ->whereHas('posyandu', function($query) use ($user_id) {
-                    $query->where('user_id', $user_id);
+
+            $balita = balita::where('posyandu_id', $posyandu_id)
+                ->where(function ($query) use ($fiveYearsAgo) {
+                    $query->where('tanggal_lahir', '<', $fiveYearsAgo)
+                        ->orWhereHas('kematian');
                 })
-                ->where('tanggal_lahir', '<', $fiveYearsAgo)
                 ->get();
-            
+
             return response()->json([
                 'success' => true,
                 'message' => 'Data balita tidak aktif berhasil diambil',
@@ -286,6 +304,9 @@ class BalitaController extends Controller
         }
     }
 
+    /**
+     * Get active balita where doesn't imunisasi when age is 18 month and not death by Posyandu ID.
+     */
     public function getAllBalitaWithNotImunisasi($posyandu_id): JsonResponse
     {
         try {
@@ -294,7 +315,7 @@ class BalitaController extends Controller
                 ->where('tanggal_lahir', '<=', $waktu_imunisasi)
                 ->whereDoesntHave('imunisasi')
                 ->get();
-                
+
             return response()->json([
                 'success' => true,
                 'message' => 'Data balita 18 Bulan yang belum imunisasi berhasil diambil',
