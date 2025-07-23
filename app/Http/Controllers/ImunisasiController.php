@@ -10,6 +10,9 @@ use Illuminate\Validation\ValidationException;
 
 class ImunisasiController extends Controller
 {
+    /**
+     * Store a newly created Imunisasi in storage.
+     */
     public function store(Request $request): JsonResponse
     {
         try {
@@ -52,7 +55,7 @@ class ImunisasiController extends Controller
     }
 
     /**
-     * Display the specified resource.
+     * Display the specified Imunisasi.
      */
     public function show($id): JsonResponse
     {
@@ -79,7 +82,7 @@ class ImunisasiController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
+     * Update the specified Imunisasi in storage.
      */
     public function update(Request $request, $id): JsonResponse
     {
@@ -129,7 +132,7 @@ class ImunisasiController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Remove the specified Imunisasi from storage.
      */
     public function destroy($id): JsonResponse
     {
@@ -154,6 +157,10 @@ class ImunisasiController extends Controller
             ], 500);
         }
     }
+
+    /**
+     * Get all Imunisasi data by Balita.
+     */
     public function GetImunisasibyBalita($balitaId): JsonResponse
     {
         try {

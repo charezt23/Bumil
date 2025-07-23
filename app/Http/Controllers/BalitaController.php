@@ -10,7 +10,7 @@ use Illuminate\Validation\Rule;
 class BalitaController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Get all Balita Data
      */
     public function index(): JsonResponse
     {
@@ -32,7 +32,7 @@ class BalitaController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Store a newly created Balita in storage.
      */
     public function store(Request $request): JsonResponse
     {
@@ -72,7 +72,7 @@ class BalitaController extends Controller
     }
 
     /**
-     * Display the specified resource.
+     * Get the specified Balita by ID. 
      */
     public function show($id): JsonResponse
     {
@@ -99,7 +99,7 @@ class BalitaController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
+     * Update the specified Balita in storage.
      */
     public function update(Request $request, $id): JsonResponse
     {
@@ -146,7 +146,7 @@ class BalitaController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Remove the specified Balita from storage.
      */
     public function destroy($id): JsonResponse
     {
@@ -206,6 +206,9 @@ class BalitaController extends Controller
         }
     }
 
+    /**
+     * g-Get all balita data by user.
+     */
     public function getAllBalitaByUser($user_id): JsonResponse
     {
         try {
@@ -227,7 +230,7 @@ class BalitaController extends Controller
         }
     }
     /**
-     * Get balita by posyandu ID.
+     * Get all balita data by posyandu.
      */
     public function getAllBalitaByPosyandu($posyandu_id): JsonResponse
     {
@@ -248,8 +251,9 @@ class BalitaController extends Controller
             ], 500);
         }
     }
+
     /**
-     * Get active balita (age 0-5 years) and not death by posyandu ID.
+     * Get active balita (age 0 <=5 years) and not died by posyandu.
      */
     public function getBalitaAktifByPosyandu($posyandu_id): JsonResponse
     {
@@ -276,7 +280,7 @@ class BalitaController extends Controller
     }
 
     /**
-     * Get inactive balita (age > 5 years) and or death by posyandu ID.
+     * Get inactive balita (age > 5 years) or died by posyandu.
      */
     public function getBalitaInAktifByPosyandu($posyandu_id): JsonResponse
     {
@@ -305,7 +309,7 @@ class BalitaController extends Controller
     }
 
     /**
-     * Get active balita where doesn't imunisasi when age is 18 month and not death by Posyandu ID.
+     * Get active balita who have not been imunisasi at the age of 18 month and not died by Posyandu.
      */
     public function getAllBalitaWithNotImunisasi($posyandu_id): JsonResponse
     {

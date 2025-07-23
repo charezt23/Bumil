@@ -10,7 +10,7 @@ use Illuminate\Validation\ValidationException;
 class KematianController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Get all kematian data.
      */
     public function index(): JsonResponse
     {
@@ -32,7 +32,7 @@ class KematianController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Store a newly created kematian in storage.
      */
     public function store(Request $request): JsonResponse
     {
@@ -67,7 +67,7 @@ class KematianController extends Controller
     }
 
     /**
-     * Display the specified resource.
+     * Display the specified kematian.
      */
     public function show($id): JsonResponse
     {
@@ -94,7 +94,7 @@ class KematianController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
+     * Update the specified kematian in storage.
      */
     public function update(Request $request, $id): JsonResponse
     {
@@ -136,7 +136,7 @@ class KematianController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Remove the specified kematian from storage.
      */
     public function destroy($id): JsonResponse
     {
@@ -163,12 +163,11 @@ class KematianController extends Controller
     }
 
     /**
-     * Get Kematian by Balita ID.
+     * Get Kematian by Balita.
      */
     public function getByBalita($balitaId): JsonResponse
     {
         try {
-            // A balita should only have one death record, so we use first().
             $kematian = Kematian::where('balita_id', $balitaId)->with('balita')->first();
 
             if (!$kematian) {

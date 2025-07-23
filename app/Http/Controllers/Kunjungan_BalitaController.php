@@ -11,7 +11,7 @@ use Illuminate\Validation\Rule;
  class Kunjungan_BalitaController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Get all kunjungan balita data.
      */
     public function index(): JsonResponse
     {
@@ -33,7 +33,7 @@ use Illuminate\Validation\Rule;
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Store a newly created kunjungan in storage.
      */
     public function store(Request $request): JsonResponse
     {
@@ -71,7 +71,7 @@ use Illuminate\Validation\Rule;
     }
 
     /**
-     * Display the specified resource.
+     * Display the specified kunjungan.
      */
     public function show($id): JsonResponse
     {
@@ -98,7 +98,7 @@ use Illuminate\Validation\Rule;
     }
 
     /**
-     * Update the specified resource in storage.
+     * Update the specified kunjungan in storage.
      */
     public function update(Request $request, $id): JsonResponse
     {
@@ -144,7 +144,7 @@ use Illuminate\Validation\Rule;
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Remove the specified kunjungan from storage.
      */
     public function destroy($id): JsonResponse
     {
