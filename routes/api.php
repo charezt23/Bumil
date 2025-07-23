@@ -26,6 +26,7 @@ Route::get('/balita/user/{user_id}', [BalitaController::class, 'getAllBalitaByUs
 Route::get('/balita/aktif/{posyandu_id}', [BalitaController::class, 'getBalitaAktifByPosyandu']);
 Route::get('/balita/inaktif/{posyandu_id}', [BalitaController::class, 'getBalitaInAktifByPosyandu']);
 Route::get('/balita/notimunisasi/{posyandu_id}', [BalitaController::class, 'getAllBalitaWithNotImunisasi']);
+Route::get('/balita/notimunisasi/user/{user_id}', [BalitaController::class, 'getAllBalitaWithNotImunisasiByUser']);
 
 // Kunjungan Balita routes (development - tanpa middleware)
 Route::apiResource('kunjungan-balita', Kunjungan_BalitaController::class);
@@ -34,10 +35,12 @@ Route::get('/kunjungan-balita/balita/{balitaId}', [Kunjungan_BalitaController::c
 // Imunisasi routes (development - tanpa middleware)
 Route::apiResource('imunisasi', ImunisasiController::class);
 Route::get('/imunisasi/balita/{balitaId}', [ImunisasiController::class, 'GetImunisasibyBalita']);
+Route::get('/imunisasi/user/{user_id}', [ImunisasiController::class, 'getImunisasiByUser']);
 
 // Kematian routes (development - tanpa middleware)
 Route::apiResource('kematian', KematianController::class);
 Route::get('/kematian/balita/{balitaId}', [KematianController::class, 'getByBalita']);
+Route::get('/kematian/user/{user_id}', [KematianController::class, 'getKematianByUser']);
 
 
 // Protected routes (memerlukan autentikasi dengan token)

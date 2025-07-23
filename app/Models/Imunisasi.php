@@ -15,6 +15,6 @@ class Imunisasi extends Model
 
     public function balita()
     {
-        return $this->belongsTo(Balita::class);
+        return $this->belongsTo(balita::class, 'balita_id');
     }
 }

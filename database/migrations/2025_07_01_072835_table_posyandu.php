@@ -13,11 +13,10 @@ return new class extends Migration
     {
         Schema::create('posyandu', function (Blueprint $table) {
             $table->id();
-            //value kolom ingin buat kolom user_id yang id nya diambil dari tabel users, buatkan migrasinya
-            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
+            $table->foreignId('user_id')->constrained('users')->onDelete('restrict');
             $table->string('nama_posyandu');
-            $table->string('nama_desa'); // Kolom nama_desa, bisa null
-            $table->timestamps(); // Menambahkan created_at dan updated_at
+            $table->string('nama_desa');
+            $table->timestamps();
         });
     }
 

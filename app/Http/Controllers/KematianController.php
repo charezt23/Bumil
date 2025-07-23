@@ -190,4 +190,37 @@ class KematianController extends Controller
             ], 500);
         }
     }
+
+    /**
+     * Get kematian data by user (bidan) who owns the posyandu.
+     */
+    public function getKematianByUser($user_id): JsonResponse
+    {
+        try {
+            // Debug logging
+            \Log::info("Getting kematian data for user: " . $user_id);
+
+            $kematian = Kematian::whereHas('balita.posyandu', function($q) use ($user_id) {
+                $q->where('user_id', $user_id);
+            })->with(['balita', 'balita.posyandu'])->get();
+
+            \Log::info("Found " . $kematian->count() . " kematian records for user " . $user_id);
+            foreach($kematian as $k) {
+                \Log::info("Kematian ID: " . $k->id . ", Balita ID: " . $k->balita_id);
+            }
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Data kematian berdasarkan user berhasil diambil',
+                'data' => $kematian
+            ], 200);
+        } catch (\Exception $e) {
+            \Log::error("Error getting kematian by user: " . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Gagal mengambil data kematian berdasarkan user',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
 }

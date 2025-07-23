@@ -13,10 +13,10 @@ return new class extends Migration
     {
         Schema::create('kunjungan_balita', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('balita_id')->constrained('balita')->onDelete('cascade');
+            $table->foreignId('balita_id')->constrained('balita')->onDelete('restrict');
             $table->date('tanggal_kunjungan');
-            $table->decimal('berat_badan', 5, 2); // Berat badan dengan 2 desimal
-            $table->decimal('tinggi_badan', 5, 2); // Tinggi badan dengan 2 desimal
+            $table->decimal('berat_badan', 5, 2);
+            $table->decimal('tinggi_badan', 5, 2);
             $table->enum('Status_gizi', ['N', 'K', 'T']);
             $table->enum('rambu_gizi', ['O', 'N1', 'N2', 'T1', 'T2', 'T3']);
             $table->timestamps();

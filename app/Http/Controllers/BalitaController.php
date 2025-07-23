@@ -214,7 +214,7 @@ class BalitaController extends Controller
         try {
             $balita = balita::whereHas('posyandu', function ($query) use ($user_id) {
                 $query->where('user_id', $user_id);
-            })->get();
+            })->with(['posyandu', 'imunisasi'])->get();
 
             return response()->json([
                 'success' => true,
@@ -236,6 +236,7 @@ class BalitaController extends Controller
     {
         try {
             $balita = balita::where('posyandu_id', $posyandu_id)
+                ->with(['posyandu', 'imunisasi'])
                 ->get();
 
             return response()->json([
@@ -329,6 +330,35 @@ class BalitaController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Gagal mengambil data balita tanpa imunisasi',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Get balita that need upcoming immunization by user (18+ months old without any immunization).
+     */
+    public function getAllBalitaWithNotImunisasiByUser($user_id): JsonResponse
+    {
+        try {
+            $waktu_imunisasi = now()->subYears(1.5);
+            $balita = balita::whereHas('posyandu', function ($query) use ($user_id) {
+                $query->where('user_id', $user_id);
+            })
+                ->where('tanggal_lahir', '<=', $waktu_imunisasi)
+                ->whereDoesntHave('imunisasi')
+                ->with(['posyandu', 'imunisasi'])
+                ->get();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Data balita 18 bulan yang perlu imunisasi mendatang berhasil diambil berdasarkan user',
+                'data' => $balita
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Gagal mengambil data balita yang perlu imunisasi mendatang berdasarkan user',
                 'error' => $e->getMessage()
             ], 500);
         }
