@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('kematian', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('balita_id')->unique()->constrained('balita')->onDelete('cascade');
+            $table->foreignId('balita_id')->unique()->constrained('balita')->onDelete('restrict');
             $table->date('tanggal_kematian');
             $table->text('penyebab_kematian');
             $table->timestamps();

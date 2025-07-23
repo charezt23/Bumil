@@ -332,33 +332,6 @@ class BalitaController extends Controller
     }
 
     /**
-     * Get balita by posyandu ID and user ID.
-     */
-    public function getAllBalitaByPosyanduAndUser($posyandu_id, $user_id): JsonResponse
-    {
-        try {
-            $balita = balita::where('posyandu_id', $posyandu_id)
-                ->whereHas('posyandu', function ($query) use ($user_id) {
-                    $query->where('user_id', $user_id);
-                })
-                ->with(['posyandu', 'imunisasi'])
-                ->get();
-
-            return response()->json([
-                'success' => true,
-                'message' => 'Data balita berhasil diambil berdasarkan posyandu dan user',
-                'data' => $balita
-            ], 200);
-        } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Gagal mengambil data balita berdasarkan posyandu dan user',
-                'error' => $e->getMessage()
-            ], 500);
-        }
-    }
-
-    /**
      * Get balita that need upcoming immunization by user (18+ months old without any immunization).
      */
     public function getAllBalitaWithNotImunisasiByUser($user_id): JsonResponse

@@ -19,9 +19,9 @@ return new class extends Migration
             $table->date('tanggal_lahir');
             $table->text('alamat');
             $table->enum('jenis_kelamin', ['L', 'P']);
-            $table->foreignId('posyandu_id')->constrained('posyandu')->onDelete('cascade');
-            $table->enum('Buku_KIA', ['ada', 'tidak_ada']);// Buku KIA bisa null jika belum ada
-            $table->timestamps(); // Menambahkan created_at dan updated_at
+            $table->foreignId('posyandu_id')->constrained('posyandu')->onDelete('restrict');
+            $table->enum('Buku_KIA', ['ada', 'tidak_ada']);
+            $table->timestamps();
         });
     }
 

@@ -21,7 +21,6 @@ Route::get('/posyandu/with-balita-count/{posyanduId}', [PosyanduController::clas
 // Balita routes (development - tanpa middleware)
 Route::apiResource('balita', BalitaController::class);
 Route::get('/balita/posyandu/{posyandu_id}', [BalitaController::class, 'getAllBalitaByPosyandu']);
-Route::get('/balita/posyandu/{posyandu_id}/user/{user_id}', [BalitaController::class, 'getAllBalitaByPosyanduAndUser']);
 Route::get('/balita/search', [BalitaController::class, 'search']);
 Route::get('/balita/user/{user_id}', [BalitaController::class, 'getAllBalitaByUser']);
 Route::get('/balita/aktif/{posyandu_id}', [BalitaController::class, 'getBalitaAktifByPosyandu']);

@@ -13,11 +13,10 @@ return new class extends Migration
     {
         Schema::create('imunisasi', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('balita_id')->constrained('balita')->onDelete('cascade');
+            $table->foreignId('balita_id')->constrained('balita')->onDelete('restrict');
             $table->enum('jenis_imunisasi',[
                 'DPT', 
-                'Campak', 
-                'Hepatitis B', 
+                'Campak',
             ]);
             $table->date('tanggal_imunisasi');
             $table->timestamps();
