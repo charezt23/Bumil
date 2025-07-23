@@ -179,4 +179,28 @@ class ImunisasiController extends Controller
             ], 500);
         }
     }
+
+    /**
+     * Get all imunisasi by user (bidan) who owns the posyandu.
+     */
+    public function getImunisasiByUser($user_id): JsonResponse
+    {
+        try {
+            $imunisasi = Imunisasi::whereHas('balita.posyandu', function($q) use ($user_id) {
+                $q->where('user_id', $user_id);
+            })->with(['balita', 'balita.posyandu'])->get();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Data imunisasi berdasarkan user berhasil diambil',
+                'data' => $imunisasi
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Gagal mengambil data imunisasi',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
 }
