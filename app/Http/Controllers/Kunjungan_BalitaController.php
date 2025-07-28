@@ -383,4 +383,51 @@ class Kunjungan_BalitaController extends Controller
             ], 500);
         }
     }
+
+    public function getallZcore($balitaId): JsonResponse
+    {
+        try {
+            $balita = Balita::findOrFail($balitaId);
+            $tanggalLahir = Carbon::parse($balita->tanggal_lahir);
+
+            $kunjungan = kunjungan_balita::where('balita_id', $balitaId)
+                ->orderBy('tanggal_kunjungan', 'asc')
+                ->get();
+
+            if ($kunjungan->isEmpty()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Tidak ada kunjungan ditemukan untuk balita ini'
+                ], 404);
+            }
+
+            $data = $kunjungan->map(function ($item) use ($tanggalLahir) {
+                $tanggalKunjungan = Carbon::parse($item->tanggal_kunjungan);
+                $usiaDiff = $tanggalKunjungan->diff($tanggalLahir);
+                $usiaBulan = ($usiaDiff->y * 12) + $usiaDiff->m;
+
+                if ($tanggalKunjungan->day < $tanggalLahir->day) {
+                    $usiaBulan -= 1;
+                }
+
+                return [
+                    'usia' => $usiaBulan,
+                    'z_score' => $item->z_score,
+                    'status_gizi' => $item->Status_gizi
+                ];
+            });
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Z-Score berhasil diambil',
+                'data' => $data
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Gagal mengambil Z-Score',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
 }

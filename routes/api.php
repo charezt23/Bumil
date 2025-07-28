@@ -31,6 +31,7 @@ Route::get('/balita/notimunisasi/user/{user_id}', [BalitaController::class, 'get
 // Kunjungan Balita routes (development - tanpa middleware)
 Route::apiResource('kunjungan-balita', Kunjungan_BalitaController::class);
 Route::get('/kunjungan-balita/balita/{balitaId}', [Kunjungan_BalitaController::class, 'getByBalita']);
+Route::get('/kunjungan-balita/zcore/{balitaId}', [Kunjungan_BalitaController::class, 'getallZcore']);
 
 // Imunisasi routes (development - tanpa middleware)
 Route::apiResource('imunisasi', ImunisasiController::class);
