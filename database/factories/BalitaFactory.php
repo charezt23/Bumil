@@ -13,7 +13,7 @@ use App\Models\Posyandu;
 class BalitaFactory extends Factory
 {
 
-    protected $model = Balita::class;
+    protected $model = balita::class;
 
     public function definition(): array
     {   $Angka_random = $this->faker->numberBetween(1, 5);

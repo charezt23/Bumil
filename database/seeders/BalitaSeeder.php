@@ -17,7 +17,7 @@ class BalitaSeeder extends Seeder
         $posyandus = Posyandu::all();
 
         foreach ($posyandus as $posyandu) {
-            Balita::factory()->count(5)->create(
+            balita::factory()->count(5)->create(
                 ['posyandu_id' => $posyandu->id]
             );
         }
