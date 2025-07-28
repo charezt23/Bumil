@@ -18,6 +18,7 @@ class kunjungan_balita extends Model
         'tinggi_badan',
         'Status_gizi',
         'rambu_gizi',
+        'z_score'
     ];
 
     public function balita()

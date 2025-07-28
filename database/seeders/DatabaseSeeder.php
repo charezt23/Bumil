@@ -30,7 +30,6 @@ class DatabaseSeeder extends Seeder
         $this->call([
             PosyanduSeeder::class,
             BalitaSeeder::class,
-            KunjunganSeeder::class, // Pastikan ini sesuai dengan nama model yang benar
         ]);
     }
 }

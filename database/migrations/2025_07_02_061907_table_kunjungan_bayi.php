@@ -17,8 +17,9 @@ return new class extends Migration
             $table->date('tanggal_kunjungan');
             $table->decimal('berat_badan', 5, 2);
             $table->decimal('tinggi_badan', 5, 2);
-            $table->enum('Status_gizi', ['N', 'K', 'T']);
+            $table->enum('Status_gizi', ['GB', 'GK', 'N', 'RGL', 'GL', 'OB', 'OTHER']);
             $table->enum('rambu_gizi', ['O', 'N1', 'N2', 'T1', 'T2', 'T3']);
+            $table->decimal('z_score', 5, 2)->nullable();
             $table->timestamps();
         });
     }
